@@ -12,7 +12,7 @@ const HeaderDate = ({
   handleToggleNoDate,
 }) => {
   return (
-    <div className="flex items-start flex-col gap-2">
+    <div className="flex items-start m-auto sm:m-0 flex-col gap-2">
       <div className="flex gap-1">
         <div className="relative">
           <DatePicker
@@ -21,7 +21,7 @@ const HeaderDate = ({
             placeholderText="Ida"
             locale={ptBR}
             disabled={noDate}
-            className="border rounded-md px-2 py-1 text-black font-semibold md:w-24 focus:border-orange-500 focus:ring-0 focus:outline-none"
+            className={`border rounded-md px-2 py-1 text-black font-semibold w-full min-w-20 focus:border-orange-500 focus:ring-0 focus:outline-none ${noDate ? 'cursor-not-allowed' : 'cursor-text'}`}
             dateFormat="dd/MM/yyyy"
             aria-label="Data de ida"
           />
@@ -34,7 +34,7 @@ const HeaderDate = ({
             placeholderText="Volta"
             locale={ptBR}
             disabled={noDate}
-            className="border rounded-md px-2 py-1 text-black font-semibold md:w-24 focus:border-orange-500 focus:ring-0 focus:outline-none"
+            className={`border rounded-md px-2 py-1 text-black font-semibold w-full min-w-20 focus:border-orange-500 focus:ring-0 focus:outline-none ${noDate ? 'cursor-not-allowed' : 'cursor-text'}`}
             dateFormat="dd/MM/yyyy"
             aria-label="Data de volta"
           />

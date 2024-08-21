@@ -2,7 +2,7 @@ import React from 'react';
 
 const HeaderSelector = ({ selectedOption, handleSelection }) => {
   return (
-    <div className="flex items-start gap-2">
+    <div className="flex justify-center gap-10 sm:justify-start sm:gap-2">
       <button
         className={`py-1 px-2 rounded-3xl items-center text-base hover:bg-slate-300 ${
           selectedOption === 'Pacotes' ? 'text-orange-500 font-bold' : 'text-black'

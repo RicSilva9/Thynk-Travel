@@ -48,9 +48,9 @@ const Header = () => {
       </section>
       <section className="bg-slate-50 sm:mt-10 mt-5 rounded-2xl sm:p-5 p-2">
         <HeaderSelector selectedOption={selectedOption} handleSelection={handleSelection} />
-        <div className="sm:mt-3">
+        <div className="sm:mt-3 mt-1">
           {selectedOption === 'Pacotes' && (
-            <div className="flex gap-10 justify-between">
+            <div className="flex gap-4 flex-col sm:flex-row pt-4 sm:pt-0 px-4 sm:px-0 sm:justify-between">
               <HeaderLocation
                 origin={origin}
                 destination={destination}
