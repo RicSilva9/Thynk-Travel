@@ -3,23 +3,29 @@ import Nav from '../Nav';
 import HeaderSelector from '../HeaderSelector';
 import HeaderLocation from '../HeaderLocation';
 import HeaderDate from '../HeaderDate';
+import HeaderTravelers from '../HeaderTravelers';
 
 const Header = () => {
   const [selectedOption, setSelectedOption] = useState('Pacotes');
-  const handleSelection = (option) => setSelectedOption(option);
-
   const [origin, setOrigin] = useState('');
   const [destination, setDestination] = useState('');
-  const handleSwap = () => {
-    setOrigin((prev) => {
-      setDestination(prev);
-      return destination;
-    });
-  };
-
   const [departureDate, setDepartureDate] = useState(null);
   const [returnDate, setReturnDate] = useState(null);
   const [noDate, setNoDate] = useState(false);
+
+  // Estado para quartos e viajantes
+  const [roomsData, setRoomsData] = useState([
+    { adults: 2, children: 0, childrenAges: [] },
+  ]);
+
+  // Funções de manipulação
+  const handleSelection = (option) => setSelectedOption(option);
+
+  const handleSwap = () => {
+    setOrigin(destination);
+    setDestination(origin);
+  };
+
   const handleToggleNoDate = () => {
     setNoDate((prev) => !prev);
     if (!noDate) {
@@ -27,6 +33,17 @@ const Header = () => {
       setReturnDate(null);
     }
   };
+
+  const handleApplyTravelers = (updatedRooms) => {
+    setRoomsData(updatedRooms);
+  };
+
+  // Cálculo de totais
+  const totalRooms = roomsData.length;
+  const totalTravelers = roomsData.reduce(
+    (acc, room) => acc + room.adults + room.children,
+    0
+  );
 
   return (
     <header
@@ -66,8 +83,15 @@ const Header = () => {
                 noDate={noDate}
                 handleToggleNoDate={handleToggleNoDate}
               />
+              <HeaderTravelers
+                roomsData={roomsData}
+                onApply={handleApplyTravelers}
+                totalRooms={totalRooms}
+                totalTravelers={totalTravelers}
+              />
             </div>
           )}
+          {selectedOption === 'Cruzeiros' && <></>}
         </div>
       </section>
     </header>
