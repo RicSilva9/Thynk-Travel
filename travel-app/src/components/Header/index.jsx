@@ -4,6 +4,7 @@ import HeaderSelector from '../HeaderSelector';
 import HeaderLocation from '../HeaderLocation';
 import HeaderDate from '../HeaderDate';
 import HeaderTravelers from '../HeaderTravelers';
+import SearchButton from '../SearchButton';
 
 const Header = () => {
   const [selectedOption, setSelectedOption] = useState('Pacotes');
@@ -13,12 +14,10 @@ const Header = () => {
   const [returnDate, setReturnDate] = useState(null);
   const [noDate, setNoDate] = useState(false);
 
-  // Estado para quartos e viajantes
   const [roomsData, setRoomsData] = useState([
     { adults: 2, children: 0, childrenAges: [] },
   ]);
 
-  // Funções de manipulação
   const handleSelection = (option) => setSelectedOption(option);
 
   const handleSwap = () => {
@@ -38,12 +37,15 @@ const Header = () => {
     setRoomsData(updatedRooms);
   };
 
-  // Cálculo de totais
   const totalRooms = roomsData.length;
   const totalTravelers = roomsData.reduce(
     (acc, room) => acc + room.adults + room.children,
     0
   );
+
+  const handleSearchClick = () => {
+    // Lógica de busca aqui
+  };
 
   return (
     <header
@@ -67,31 +69,40 @@ const Header = () => {
         <HeaderSelector selectedOption={selectedOption} handleSelection={handleSelection} />
         <div className="sm:mt-3 mt-1">
           {selectedOption === 'Pacotes' && (
-            <div className="flex gap-4 flex-col sm:flex-row pt-4 sm:pt-0 px-4 sm:px-0 sm:justify-between">
-              <HeaderLocation
-                origin={origin}
-                destination={destination}
-                handleSwap={handleSwap}
-                setOrigin={setOrigin}
-                setDestination={setDestination}
-              />
-              <HeaderDate
-                departureDate={departureDate}
-                returnDate={returnDate}
-                setDepartureDate={setDepartureDate}
-                setReturnDate={setReturnDate}
-                noDate={noDate}
-                handleToggleNoDate={handleToggleNoDate}
-              />
-              <HeaderTravelers
-                roomsData={roomsData}
-                onApply={handleApplyTravelers}
-                totalRooms={totalRooms}
-                totalTravelers={totalTravelers}
-              />
+            <div className='flex lg:items-start items-center flex-col lg:flex-row gap-4'>
+              <div className="flex gap-4 flex-col md:flex-row pt-4 sm:pt-0 px-4 sm:px-0 sm:justify-between items-center md:items-start">
+                <HeaderLocation
+                  origin={origin}
+                  destination={destination}
+                  handleSwap={handleSwap}
+                  setOrigin={setOrigin}
+                  setDestination={setDestination}
+                />
+                <HeaderDate
+                  departureDate={departureDate}
+                  returnDate={returnDate}
+                  setDepartureDate={setDepartureDate}
+                  setReturnDate={setReturnDate}
+                  noDate={noDate}
+                  handleToggleNoDate={handleToggleNoDate}
+                />
+                <HeaderTravelers
+                  roomsData={roomsData}
+                  onApply={handleApplyTravelers}
+                  totalRooms={totalRooms}
+                  totalTravelers={totalTravelers}
+                />
+              </div>
+              <div className='w-full max-w-60 flex justify-center'>
+                <SearchButton onClick={handleSearchClick} />
+              </div>
             </div>
           )}
-          {selectedOption === 'Cruzeiros' && <></>}
+          {selectedOption === 'Cruzeiros' && (
+            <div className='rounded-md bg-red-200 p-2'>
+              <span className='text-red-900'>Esta seção do site ainda está em desenvolvimento. Estamos trabalhando para trazer todas as funcionalidades o mais rápido possível. Agradecemos sua compreensão!</span>
+            </div>
+          )}
         </div>
       </section>
     </header>

@@ -11,6 +11,8 @@ const HeaderDate = ({
   noDate,
   handleToggleNoDate,
 }) => {
+  const today = new Date();
+
   return (
     <div className="flex items-start m-auto sm:m-0 flex-col gap-2">
       <div className="flex gap-1">
@@ -21,9 +23,10 @@ const HeaderDate = ({
             placeholderText="Ida"
             locale={ptBR}
             disabled={noDate}
-            className={`border rounded-md px-2 py-1 text-black font-semibold w-full min-w-20 focus:border-orange-500 focus:ring-0 focus:outline-none ${noDate ? 'cursor-not-allowed' : 'cursor-text'}`}
+            className={`border rounded-md px-2 py-1 text-black font-semibold w-full min-w-14 focus:border-orange-500 focus:ring-0 focus:outline-none ${noDate ? 'cursor-not-allowed' : 'cursor-text'}`}
             dateFormat="dd/MM/yyyy"
             aria-label="Data de ida"
+            minDate={today}
           />
         </div>
 
@@ -34,9 +37,10 @@ const HeaderDate = ({
             placeholderText="Volta"
             locale={ptBR}
             disabled={noDate}
-            className={`border rounded-md px-2 py-1 text-black font-semibold w-full min-w-20 focus:border-orange-500 focus:ring-0 focus:outline-none ${noDate ? 'cursor-not-allowed' : 'cursor-text'}`}
+            className={`border rounded-md px-2 py-1 text-black font-semibold w-full min-w-14 focus:border-orange-500 focus:ring-0 focus:outline-none ${noDate ? 'cursor-not-allowed' : 'cursor-text'}`}
             dateFormat="dd/MM/yyyy"
             aria-label="Data de volta"
+            minDate={today}
           />
         </div>
       </div>

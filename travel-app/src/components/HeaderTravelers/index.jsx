@@ -100,7 +100,7 @@ class HeaderTravelers extends Component {
     );
 
     return (
-      <div className="relative w-full max-w-80 max-sm:m-auto">
+      <div className="relative w-full max-w-72 min-w-48 max-sm:m-auto">
         <div
           ref={this.wrapperRef}
           className={`border rounded-md px-4 py-2 text-gray-800 bg-white w-full font-semibold cursor-pointer ${
@@ -149,7 +149,7 @@ class HeaderTravelers extends Component {
                   </button>
                 </div>
                 <div className="flex items-center mb-4">
-                  <p className="w-20 text-gray-600">Crianças</p>
+                  <p className="w-20 text-gray-600">Menores</p>
                   <button
                     onClick={() => this.handleRoomChange(roomIndex, 'children', -1)}
                     disabled={room.children <= 0}
@@ -168,7 +168,7 @@ class HeaderTravelers extends Component {
                 {room.childrenAges.map((age, childIndex) => (
                   <div key={childIndex} className="mb-2 flex items-center">
                     <label className="text-gray-600 mr-2">
-                      Idade da Criança {childIndex + 1}:
+                      Idade do Menor {childIndex + 1}:
                     </label>
                     <input
                       type="number"
