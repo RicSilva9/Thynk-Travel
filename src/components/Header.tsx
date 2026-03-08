@@ -459,7 +459,7 @@ function HeaderDate({
         <div className="relative">
           <DatePicker
             selected={returnDate}
-            onChange={(date: Date | null) => setDepartureDate(date)}
+            onChange={(date: Date | null) => setReturnDate(date)}
             placeholderText="Volta"
             locale={ptBR}
             disabled={noDate}
