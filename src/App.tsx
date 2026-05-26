@@ -1,21 +1,18 @@
-import Header from "./components/Header"
-import Destinos from "./components/Destinos"
-import Categorias from "./components/Categorias"
-import Depoimentos from "./components/Depoimentos"
-import Footer from "./components/Footer"
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Packages from "./pages/Packages";
+import NotFound from "./pages/NotFound";
 
 function App() {
   return (
-    <>
-      <Header />
-      <main>
-        <Destinos />
-        <Categorias />
-        <Depoimentos />
-      </main>
-      <Footer />
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/packages" element={<Packages />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
