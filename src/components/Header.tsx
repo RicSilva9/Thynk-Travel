@@ -1,4 +1,4 @@
-import { useState, type ReactNode } from "react"
+import { useState, useEffect, type ReactNode } from "react"
 import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/outline"
 import {
   Disclosure,
@@ -14,7 +14,7 @@ import classNames from "classnames"
 import DatePicker from "react-datepicker"
 import { ptBR } from "date-fns/locale"
 import "react-datepicker/dist/react-datepicker.css"
-
+import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 
 type ModalLoginProps = {
   isOpen: boolean
@@ -520,6 +520,30 @@ function Header() {
   const [returnDate, setReturnDate] = useState<Date | null>(null)
   const [noDate, setNoDate] = useState(false)
 
+  const navigate = useNavigate()
+  const location = useLocation()                         
+  const isResultsPage = location.pathname === "/packages"
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Lê os parâmetros da URL
+    const urlOrigin = searchParams.get("origin");
+    const urlDestination = searchParams.get("destination");
+    const urlDeparture = searchParams.get("departure");
+    const urlReturn = searchParams.get("return");
+
+    // Preenche o formulário com o que veio da URL
+    if (urlOrigin) setOrigin(urlOrigin);
+    if (urlDestination) setDestination(urlDestination);
+    if (urlDeparture) setDepartureDate(new Date(urlDeparture));
+    if (urlReturn) setReturnDate(new Date(urlReturn));
+
+    // Se NÃO veio data na URL, marca "Sem data definida"
+    if (!urlDeparture && !urlReturn && isResultsPage) {
+      setNoDate(true);
+    }
+  }, [searchParams, isResultsPage]);
+
   const handleSelection = (option: string) => setSelectedOption(option)
 
   const handleSwap = () => {
@@ -528,8 +552,32 @@ function Header() {
   }
 
   const handleSearchClick = () => {
-    console.log("Pesquisar")
-  }
+    // Cria um objeto pra montar os parâmetros da URL
+    const params = new URLSearchParams();
+
+    // Adiciona origem se foi preenchida
+    if (origin.trim()) {
+      params.set("origin", origin.trim());
+    }
+
+    // Adiciona destino se foi preenchido
+    if (destination.trim()) {
+      params.set("destination", destination.trim());
+    }
+
+    // Adiciona datas só se NÃO estiver marcado "Sem data definida"
+    if (!noDate) {
+      if (departureDate) {
+        params.set("departure", departureDate.toISOString());
+      }
+      if (returnDate) {
+        params.set("return", returnDate.toISOString());
+      }
+    }
+
+    // Navega pra página de resultados com os parâmetros
+    navigate(`/packages?${params.toString()}`);
+  };
 
   const handleToggleNoDate = () => {
   setNoDate((prev) => !prev)
@@ -542,24 +590,28 @@ function Header() {
 
   return (
     <header
-      className="mx-0 max-w-screen-2xl rounded-b-2xl bg-slate-700 bg-cover bg-center bg-fixed px-8 pb-20 pt-20 text-white sm:mx-4 sm:pb-24 md:px-16 2xl:m-auto"
+      className={`mx-0 max-w-screen-2xl rounded-b-2xl bg-slate-700 bg-cover bg-center bg-fixed px-8 text-white sm:mx-4 md:px-16 2xl:m-auto ${
+        isResultsPage ? "pb-10 pt-20" : "pb-20 pt-20 sm:pb-24"
+      }`}
       style={{ backgroundImage: "url(/img/header/bg-header.png)" }}
       id="home-id-nav"
     >
       <Nav />
 
-      <section>
-        <h1 className="fjalla w-1/2 text-3xl leading-tight tracking-normal hover:cursor-default max-lg:w-2/3 max-sm:w-full sm:text-4xl">
-          Oferecemos os melhores pacotes de viagem para suas férias!
-        </h1>
+      {!isResultsPage && (
+        <section>
+          <h1 className="fjalla w-1/2 text-3xl leading-tight tracking-normal hover:cursor-default max-lg:w-2/3 max-sm:w-full sm:text-4xl">
+            Oferecemos os melhores pacotes de viagem para suas férias!
+          </h1>
 
-        <p className="mt-2 w-1/2 hover:cursor-default max-lg:w-2/3 max-lg:text-sm max-md:text-xs max-sm:hidden">
-          A Agência de Viagens oferece serviços personalizados para quem busca
-          destinos incríveis. Com nossos pacotes de viagem, você terá uma
-          experiência única e inesquecível. Realize seus sonhos de viajar
-          conosco!
-        </p>
-      </section>
+          <p className="mt-2 w-1/2 hover:cursor-default max-lg:w-2/3 max-lg:text-sm max-md:text-xs max-sm:hidden">
+            A Agência de Viagens oferece serviços personalizados para quem busca
+            destinos incríveis. Com nossos pacotes de viagem, você terá uma
+            experiência única e inesquecível. Realize seus sonhos de viajar
+            conosco!
+          </p>
+        </section>
+      )}
 
       <section className="mt-5 rounded-2xl bg-slate-50 p-2 sm:mt-10 sm:p-5">
         <HeaderSelector
@@ -606,7 +658,7 @@ function Header() {
         </div>
       </section>
     </header>
-  )
+  );
 }
 
 export default Header
