@@ -1,3 +1,4 @@
+import { Link, useLocation } from "react-router-dom";
 import { StarIcon, ClockIcon, MapPinIcon } from "@heroicons/react/24/solid";
 import type { TravelPackage } from "../types/travel-package";
 
@@ -6,6 +7,8 @@ type PackageCardProps = {
 };
 
 function PackageCard({ package: pkg }: PackageCardProps) {
+  const location = useLocation();
+
   // Calcula preço com desconto (se tiver)
   const finalPrice = pkg.discount
     ? pkg.price - (pkg.price * pkg.discount) / 100
@@ -103,12 +106,12 @@ function PackageCard({ package: pkg }: PackageCardProps) {
             </p>
           </div>
 
-          <button
-            type="button"
+          <Link
+            to={`/packages/${pkg.id}${location.search}`}
             className="rounded-xl bg-slate-800 px-4 py-2 text-sm font-semibold text-white transition hover:bg-orange-500"
           >
             Ver mais
-          </button>
+          </Link>
         </div>
       </div>
     </article>

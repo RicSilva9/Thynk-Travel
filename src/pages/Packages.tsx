@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import {
   ArrowLeftIcon,
@@ -6,6 +6,7 @@ import {
   ExclamationTriangleIcon,
   InformationCircleIcon,
 } from "@heroicons/react/24/outline";
+import { parseISO, differenceInCalendarDays } from "date-fns";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import PackageCard from "../components/PackageCard";
@@ -24,32 +25,39 @@ function Packages() {
   const requestedDuration = useMemo(() => {
     if (!departure || !returnDate) return null;
 
-    const start = new Date(departure);
-    const end = new Date(returnDate);
-    const diffMs = end.getTime() - start.getTime();
-    const diffDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+    try {
+      const start = parseISO(departure);
+      const end = parseISO(returnDate);
 
-    return diffDays;
+      // Conta dias de forma inclusiva: mesma data => 1 dia
+      const diffDays = differenceInCalendarDays(end, start) + 1;
+      return diffDays;
+    } catch {
+      return null;
+    }
   }, [departure, returnDate]);
 
   // Função auxiliar: filtra por origem e destino (sem duração)
-  const filterByOriginAndDestination = (pkg: (typeof packages)[number]) => {
-    if (origin) {
-      const hasOrigin = pkg.origins.some(
-        (o) => o.toLowerCase() === origin.toLowerCase(),
-      );
-      if (!hasOrigin) return false;
-    }
+  const filterByOriginAndDestination = useCallback(
+    (pkg: (typeof packages)[number]) => {
+      if (origin) {
+        const hasOrigin = pkg.origins.some(
+          (o) => o.toLowerCase() === origin.toLowerCase(),
+        );
+        if (!hasOrigin) return false;
+      }
 
-    if (destination) {
-      const matchesDestination = pkg.destination
-        .toLowerCase()
-        .includes(destination.toLowerCase());
-      if (!matchesDestination) return false;
-    }
+      if (destination) {
+        const matchesDestination = pkg.destination
+          .toLowerCase()
+          .includes(destination.toLowerCase());
+        if (!matchesDestination) return false;
+      }
 
-    return true;
-  };
+      return true;
+    },
+    [origin, destination],
+  );
 
   // Filtro principal: COM duração
   const exactMatches = useMemo(() => {
@@ -60,7 +68,7 @@ function Packages() {
       // Aplica filtro de duração (com tolerância de 2 dias)
       if (requestedDuration) {
         const tolerance = 2;
-        const minDays = requestedDuration - tolerance;
+        const minDays = Math.max(1, requestedDuration - tolerance);
         const maxDays = requestedDuration + tolerance;
 
         if (pkg.durationDays < minDays || pkg.durationDays > maxDays) {
@@ -70,14 +78,12 @@ function Packages() {
 
       return true;
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [origin, destination, requestedDuration]);
+  }, [filterByOriginAndDestination, requestedDuration]);
 
   // Filtro alternativo: SEM duração (só origem + destino)
   const alternativeMatches = useMemo(() => {
     return packages.filter(filterByOriginAndDestination);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [origin, destination]);
+  }, [filterByOriginAndDestination]);
 
   // Verifica se o usuário fez alguma pesquisa
   const hasSearched = origin || destination || departure || returnDate;
