@@ -255,7 +255,7 @@ function PackageDetail() {
                       key={index}
                       className="flex items-start gap-2 text-slate-600"
                     >
-                      <CheckCircleIcon className="h-5 w-5 flex-shrink-0 text-green-500" />
+                      <CheckCircleIcon className="h-5 w-5 shrink-0 text-green-500" />
                       <span>{item}</span>
                     </li>
                   ))}

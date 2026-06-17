@@ -170,7 +170,7 @@ function Packages() {
             {/* CASO 2: Não achou com duração, mas tem alternativas */}
             {showingAlternatives && (
               <div className="mb-6 flex items-start gap-3 rounded-2xl border border-orange-200 bg-orange-50 p-5">
-                <InformationCircleIcon className="h-6 w-6 flex-shrink-0 text-orange-500" />
+                <InformationCircleIcon className="h-6 w-6 shrink-0 text-orange-500" />
                 <div>
                   <h2 className="text-lg font-bold text-slate-800">
                     Não encontramos pacotes com ~{requestedDuration} dias

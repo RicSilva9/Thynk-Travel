@@ -1,5 +1,5 @@
-import { useState, useEffect, type ReactNode } from "react"
-import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/outline"
+import { useState, useEffect, type ReactNode } from "react";
+import { XMarkIcon, Bars3Icon } from "@heroicons/react/24/outline";
 import {
   Disclosure,
   DisclosureButton,
@@ -9,25 +9,22 @@ import {
   MenuItems,
   MenuItem,
   Transition,
-} from "@headlessui/react"
-import classNames from "classnames"
-import DatePicker from "react-datepicker"
-import { ptBR } from "date-fns/locale"
-import "react-datepicker/dist/react-datepicker.css"
+} from "@headlessui/react";
+import classNames from "classnames";
+import DatePicker from "react-datepicker";
+import { ptBR } from "date-fns/locale";
+import "react-datepicker/dist/react-datepicker.css";
+import { packages } from "../data/Package";
 import { useNavigate, useLocation, useSearchParams } from "react-router-dom";
 
 type ModalLoginProps = {
-  isOpen: boolean
-  setModalOpen: () => void
-  children?: ReactNode
-}
+  isOpen: boolean;
+  setModalOpen: () => void;
+  children?: ReactNode;
+};
 
-function ModalLogin({
-  isOpen,
-  setModalOpen,
-  children,
-}: ModalLoginProps) {
-  if (!isOpen) return null
+function ModalLogin({ isOpen, setModalOpen, children }: ModalLoginProps) {
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex h-screen w-screen items-center justify-center bg-black/30 px-4">
@@ -152,23 +149,31 @@ function ModalLogin({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 type NavigationItem = {
-  name: string
-  href: string
-  current: boolean
-}
+  name: string;
+  href: string;
+  current: boolean;
+};
 
 const navigation: NavigationItem[] = [
   { name: "Home", href: "#home-id-nav", current: true },
-]
+];
+
+const uniqueDestinations = [
+  ...new Set(packages.map((pkg) => pkg.destination)),
+].sort();
+
+const uniqueOrigins = [
+  ...new Set(packages.flatMap((pkg) => pkg.origins)),
+].sort();
 
 type HeaderSelectorProps = {
-  selectedOption: string
-  handleSelection: (option: string) => void
-}
+  selectedOption: string;
+  handleSelection: (option: string) => void;
+};
 
 function HeaderSelector({
   selectedOption,
@@ -200,16 +205,17 @@ function HeaderSelector({
         Cruzeiros
       </button>
     </div>
-  )
+  );
 }
 
 type HeaderLocationProps = {
-  origin: string
-  destination: string
-  handleSwap: () => void
-  setOrigin: React.Dispatch<React.SetStateAction<string>>
-  setDestination: React.Dispatch<React.SetStateAction<string>>
-}
+  origin: string;
+  destination: string;
+  handleSwap: () => void;
+  setOrigin: React.Dispatch<React.SetStateAction<string>>;
+  setDestination: React.Dispatch<React.SetStateAction<string>>;
+  onEnterPress: () => void;
+};
 
 function HeaderLocation({
   origin,
@@ -217,7 +223,14 @@ function HeaderLocation({
   handleSwap,
   setOrigin,
   setDestination,
+  onEnterPress,
 }: HeaderLocationProps) {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      onEnterPress();
+    }
+  };
+
   return (
     <div className="m-auto flex items-start gap-1 sm:m-0">
       <input
@@ -225,9 +238,17 @@ function HeaderLocation({
         placeholder="Origem"
         value={origin}
         onChange={(e) => setOrigin(e.target.value)}
+        onKeyDown={handleKeyDown}
+        list="origins-list"
         className="w-full min-w-16 rounded-md border px-2 py-1 font-semibold text-black focus:border-orange-500 focus:outline-none focus:ring-0"
         aria-label="Origem"
+        autoComplete="off"
       />
+      <datalist id="origins-list">
+        {uniqueOrigins.map((originOption) => (
+          <option key={originOption} value={originOption} />
+        ))}
+      </datalist>
 
       <button
         onClick={handleSwap}
@@ -242,16 +263,24 @@ function HeaderLocation({
         placeholder="Destino"
         value={destination}
         onChange={(e) => setDestination(e.target.value)}
+        onKeyDown={handleKeyDown}
+        list="destinations-list"
         className="w-full min-w-16 rounded-md border px-2 py-1 font-semibold text-black focus:border-orange-500 focus:outline-none focus:ring-0"
         aria-label="Destino"
+        autoComplete="off"
       />
+      <datalist id="destinations-list">
+        {uniqueDestinations.map((dest) => (
+          <option key={dest} value={dest} />
+        ))}
+      </datalist>
     </div>
-  )
+  );
 }
 
 type SearchButtonProps = {
-  onClick: () => void
-}
+  onClick: () => void;
+};
 
 function SearchButton({ onClick }: SearchButtonProps) {
   return (
@@ -263,21 +292,21 @@ function SearchButton({ onClick }: SearchButtonProps) {
         Pesquisar
       </button>
     </div>
-  )
+  );
 }
 
 function Nav() {
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
 
   const smoothScroll = (target: string) => {
-    const element = document.querySelector(target)
+    const element = document.querySelector(target);
 
     if (element) {
       element.scrollIntoView({
         behavior: "smooth",
-      })
+      });
     }
-  }
+  };
 
   return (
     <Disclosure
@@ -311,8 +340,8 @@ function Nav() {
                   <a
                     href="#home-id-nav"
                     onClick={(e) => {
-                      e.preventDefault()
-                      smoothScroll("#home-id-nav")
+                      e.preventDefault();
+                      smoothScroll("#home-id-nav");
                     }}
                   >
                     <img
@@ -333,12 +362,12 @@ function Nav() {
                           item.current
                             ? "text-white hover:bg-gray-700 hover:text-white"
                             : "text-white hover:bg-gray-700 hover:text-white",
-                          "mt-1 rounded-md px-3 py-2 text-sm font-medium"
+                          "mt-1 rounded-md px-3 py-2 text-sm font-medium",
                         )}
                         aria-current={item.current ? "page" : undefined}
                         onClick={(e) => {
-                          e.preventDefault()
-                          smoothScroll(item.href)
+                          e.preventDefault();
+                          smoothScroll(item.href);
                         }}
                       >
                         {item.name}
@@ -397,12 +426,12 @@ function Nav() {
                     item.current
                       ? "text-white hover:bg-gray-700 hover:text-white"
                       : "text-white hover:bg-gray-700 hover:text-white",
-                    "block rounded-md px-3 py-2 text-base font-medium"
+                    "block rounded-md px-3 py-2 text-base font-medium",
                   )}
                   aria-current={item.current ? "page" : undefined}
                   onClick={(e) => {
-                    e.preventDefault()
-                    smoothScroll(item.href)
+                    e.preventDefault();
+                    smoothScroll(item.href);
                   }}
                 >
                   {item.name}
@@ -413,17 +442,17 @@ function Nav() {
         </>
       )}
     </Disclosure>
-  )
+  );
 }
 
 type HeaderDateProps = {
-  departureDate: Date | null
-  returnDate: Date | null
-  setDepartureDate: React.Dispatch<React.SetStateAction<Date | null>>
-  setReturnDate: React.Dispatch<React.SetStateAction<Date | null>>
-  noDate: boolean
-  handleToggleNoDate: () => void
-}
+  departureDate: Date | null;
+  returnDate: Date | null;
+  setDepartureDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  setReturnDate: React.Dispatch<React.SetStateAction<Date | null>>;
+  noDate: boolean;
+  handleToggleNoDate: () => void;
+};
 
 function HeaderDate({
   departureDate,
@@ -433,7 +462,7 @@ function HeaderDate({
   noDate,
   handleToggleNoDate,
 }: HeaderDateProps) {
-  const today = new Date()
+  const today = new Date();
 
   return (
     <div className="m-auto flex flex-col items-start gap-2 sm:m-0">
@@ -509,20 +538,20 @@ function HeaderDate({
         </label>
       </div>
     </div>
-  )
+  );
 }
 
 function Header() {
-  const [selectedOption, setSelectedOption] = useState("Pacotes")
-  const [origin, setOrigin] = useState("")
-  const [destination, setDestination] = useState("")
-  const [departureDate, setDepartureDate] = useState<Date | null>(null)
-  const [returnDate, setReturnDate] = useState<Date | null>(null)
-  const [noDate, setNoDate] = useState(false)
+  const [selectedOption, setSelectedOption] = useState("Pacotes");
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [departureDate, setDepartureDate] = useState<Date | null>(null);
+  const [returnDate, setReturnDate] = useState<Date | null>(null);
+  const [noDate, setNoDate] = useState(false);
 
-  const navigate = useNavigate()
-  const location = useLocation()                         
-  const isResultsPage = location.pathname === "/packages"
+  const navigate = useNavigate();
+  const location = useLocation();
+  const isResultsPage = location.pathname === "/packages";
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
@@ -544,12 +573,12 @@ function Header() {
     }
   }, [searchParams, isResultsPage]);
 
-  const handleSelection = (option: string) => setSelectedOption(option)
+  const handleSelection = (option: string) => setSelectedOption(option);
 
   const handleSwap = () => {
-    setOrigin(destination)
-    setDestination(origin)
-  }
+    setOrigin(destination);
+    setDestination(origin);
+  };
 
   const handleSearchClick = () => {
     // Cria um objeto pra montar os parâmetros da URL
@@ -580,13 +609,13 @@ function Header() {
   };
 
   const handleToggleNoDate = () => {
-  setNoDate((prev) => !prev)
+    setNoDate((prev) => !prev);
 
-  if (!noDate) {
-    setDepartureDate(null)
-    setReturnDate(null)
-  }
-}
+    if (!noDate) {
+      setDepartureDate(null);
+      setReturnDate(null);
+    }
+  };
 
   return (
     <header
@@ -629,6 +658,7 @@ function Header() {
                   handleSwap={handleSwap}
                   setOrigin={setOrigin}
                   setDestination={setDestination}
+                  onEnterPress={handleSearchClick}
                 />
 
                 <HeaderDate
@@ -661,4 +691,4 @@ function Header() {
   );
 }
 
-export default Header
+export default Header;
